@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-async function sendVoteEmail({ to, question, voteLink }) {
+async function sendVoteEmail({ to, subject, question, voteLink }) {
   const html = `
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
       <h2 style="margin-top: 0;">You've been invited to respond to a survey</h2>
@@ -40,7 +40,7 @@ async function sendVoteEmail({ to, question, voteLink }) {
   await transporter.sendMail({
     from: `"Survey" <${process.env.GMAIL_USER}>`,
     to,
-    subject: 'Your opinion is requested — please respond',
+    subject: subject || 'Your opinion is requested — please respond',
     html,
   });
 }

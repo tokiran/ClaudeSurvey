@@ -10,8 +10,13 @@
       <p class="alert"><%= error %></p>
     <% } %>
     <form method="POST" action="/admin/new">
+      <label>Email subject <span class="muted">(what participants see in their inbox)</span>
+        <input type="text" name="subject" required autofocus
+          placeholder="e.g. Quick question from the team — 1 click to respond"
+          value="Your opinion is requested — please respond">
+      </label>
       <label>Question <span class="muted">(respondents will answer Agree or Disagree)</span>
-        <textarea name="question" rows="3" required autofocus
+        <textarea name="question" rows="3" required
           placeholder="e.g. Our team meetings are an effective use of time."></textarea>
       </label>
       <label>Participant emails <span class="muted">(one per line, or comma-separated; duplicates are removed)</span>

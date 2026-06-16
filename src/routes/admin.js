@@ -54,6 +54,7 @@ router.get('/new', requireAuth, (req, res) => {
 
 router.post('/new', requireAuth, wrap(async (req, res) => {
   const question = (req.body.question || '').trim();
+  const subject = (req.body.subject || '').trim() || 'Your opinion is requested — please respond';
   const rawEmails = req.body.emails || '';
 
   if (!question) {
@@ -69,8 +70,8 @@ router.post('/new', requireAuth, wrap(async (req, res) => {
   let surveyId;
   try {
     const r = await tx.execute({
-      sql: 'INSERT INTO surveys (question) VALUES (?)',
-      args: [question],
+      sql: 'INSERT INTO surveys (question, subject) VALUES (?, ?)',
+      args: [question, subject],
     });
     surveyId = Number(r.lastInsertRowid);
     for (const email of emails) {
@@ -151,7 +152,7 @@ router.post('/survey/:id/send', requireAuth, wrap(async (req, res) => {
   for (const p of pendingResult.rows) {
     const voteLink = `${base}/vote/${p.vote_token}`;
     try {
-      await sendVoteEmail({ to: p.email, question: survey.question, voteLink });
+      await sendVoteEmail({ to: p.email, subject: survey.subject, question: survey.question, voteLink });
       sent++;
     } catch (err) {
       errors.push(`${p.email}: ${err.message}`);

@@ -24,10 +24,15 @@ async function init() {
     CREATE TABLE IF NOT EXISTS surveys (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       question TEXT NOT NULL,
+      subject TEXT NOT NULL DEFAULT 'Your opinion is requested — please respond',
       status TEXT NOT NULL DEFAULT 'open',
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
+  // Add subject column to existing databases that predate this field
+  await client.execute(`
+    ALTER TABLE surveys ADD COLUMN subject TEXT NOT NULL DEFAULT 'Your opinion is requested — please respond'
+  `).catch(() => {}); // ignore "duplicate column" error if column already exists
   await client.execute(`
     CREATE TABLE IF NOT EXISTS participants (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
