@@ -1,20 +1,19 @@
+require('dotenv').config();
 const { createClient } = require('@libsql/client');
 
 const url = process.env.TURSO_DATABASE_URL;
+const authToken = process.env.TURSO_AUTH_TOKEN;
+
 if (!url) {
-  throw new Error(
-    'TURSO_DATABASE_URL is not set.\n' +
-    '  • Local dev: add TURSO_DATABASE_URL=file:./survey.db to your .env\n' +
-    '  • Vercel: add TURSO_DATABASE_URL and TURSO_AUTH_TOKEN in Project → Settings → Environment Variables'
-  );
+  console.error('ERROR: TURSO_DATABASE_URL is not set in .env');
+  process.exit(1);
 }
 
-const client = createClient({
-  url,
-  authToken: process.env.TURSO_AUTH_TOKEN || undefined,
-});
+console.log('Connecting to:', url);
 
-async function init() {
+const client = createClient({ url, authToken: authToken || undefined });
+
+async function run() {
   await client.execute(`
     CREATE TABLE IF NOT EXISTS surveys (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -23,6 +22,8 @@ async function init() {
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
+  console.log('✓ surveys table');
+
   await client.execute(`
     CREATE TABLE IF NOT EXISTS participants (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -35,6 +36,16 @@ async function init() {
       UNIQUE(survey_id, email)
     )
   `);
+  console.log('✓ participants table');
+
+  const result = await client.execute(
+    "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name"
+  );
+  console.log('Tables in database:', result.rows.map(r => r.name).join(', ') || '(none)');
+  console.log('Migration complete.');
 }
 
-module.exports = { client, init };
+run().catch(err => {
+  console.error('Migration failed:', err.message);
+  process.exit(1);
+});
