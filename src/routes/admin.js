@@ -24,7 +24,7 @@ router.post('/login', wrap(async (req, res) => {
   }
 
   req.session.adminLoggedIn = true;
-  res.redirect('/admin');
+  res.redirect('/admin/new');
 }));
 
 router.post('/logout', requireAuth, (req, res) => {
@@ -36,11 +36,12 @@ router.post('/logout', requireAuth, (req, res) => {
 
 router.get('/', requireAuth, wrap(async (req, res) => {
   const result = await client.execute({
-    sql: `SELECT s.*, COUNT(p.id) AS total, SUM(p.responded) AS responded
-          FROM surveys s
-          LEFT JOIN participants p ON p.survey_id = s.id
-          GROUP BY s.id
-          ORDER BY s.created_at DESC`,
+    sql: `SELECT
+            id, question, subject, status, created_at,
+            (SELECT COUNT(*) FROM participants WHERE survey_id = surveys.id) AS total,
+            (SELECT COALESCE(SUM(responded), 0) FROM participants WHERE survey_id = surveys.id) AS responded
+          FROM surveys
+          ORDER BY created_at DESC`,
     args: [],
   });
   res.render('admin/dashboard', { surveys: result.rows });
