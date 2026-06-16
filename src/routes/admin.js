@@ -87,10 +87,12 @@ router.post('/new', requireAuth, wrap(async (req, res) => {
     throw e;
   }
 
-  res.redirect(`/admin/survey/${surveyId}`);
+  res.redirect('/admin');
 }));
 
 // ── Survey results ───────────────────────────────────────────────────────────
+
+router.get('/survey', requireAuth, (req, res) => res.redirect('/admin'));
 
 router.get('/survey/:id', requireAuth, wrap(async (req, res) => {
   const surveyResult = await client.execute({
