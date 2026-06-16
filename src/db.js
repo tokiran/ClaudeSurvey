@@ -1,7 +1,16 @@
 const { createClient } = require('@libsql/client');
 
+const url = process.env.TURSO_DATABASE_URL;
+if (!url) {
+  throw new Error(
+    'TURSO_DATABASE_URL is not set.\n' +
+    '  • Local dev: add TURSO_DATABASE_URL=file:./survey.db to your .env\n' +
+    '  • Vercel: add TURSO_DATABASE_URL and TURSO_AUTH_TOKEN in Project → Settings → Environment Variables'
+  );
+}
+
 const client = createClient({
-  url: process.env.TURSO_DATABASE_URL || 'file:./survey.db',
+  url,
   authToken: process.env.TURSO_AUTH_TOKEN || undefined,
 });
 
