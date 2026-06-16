@@ -1,0 +1,25 @@
+<%- include('../partials/head', { title: 'New Survey' }) %>
+<div class="container">
+  <header class="topbar">
+    <h1>New survey</h1>
+    <a href="/admin" class="btn btn-ghost">← Back</a>
+  </header>
+
+  <div class="card">
+    <% if (error) { %>
+      <p class="alert"><%= error %></p>
+    <% } %>
+    <form method="POST" action="/admin/new">
+      <label>Question <span class="muted">(respondents will answer Agree or Disagree)</span>
+        <textarea name="question" rows="3" required autofocus
+          placeholder="e.g. Our team meetings are an effective use of time."></textarea>
+      </label>
+      <label>Participant emails <span class="muted">(one per line, or comma-separated; duplicates are removed)</span>
+        <textarea name="emails" rows="8"
+          placeholder="alice@example.com&#10;bob@example.com&#10;carol@example.com"></textarea>
+      </label>
+      <button type="submit" class="btn">Create survey</button>
+    </form>
+  </div>
+</div>
+<%- include('../partials/foot') %>

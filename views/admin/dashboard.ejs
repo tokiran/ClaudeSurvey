@@ -1,0 +1,43 @@
+<%- include('../partials/head', { title: 'Dashboard' }) %>
+<div class="container">
+  <header class="topbar">
+    <h1>Surveys</h1>
+    <div class="topbar-right">
+      <a href="/admin/new" class="btn">+ New survey</a>
+      <form method="POST" action="/admin/logout" style="display:inline">
+        <button class="btn btn-ghost">Sign out</button>
+      </form>
+    </div>
+  </header>
+
+  <% if (surveys.length === 0) { %>
+    <div class="card center">
+      <p class="muted">No surveys yet.</p>
+      <a href="/admin/new" class="btn">Create your first survey</a>
+    </div>
+  <% } else { %>
+    <table>
+      <thead>
+        <tr>
+          <th>Question</th>
+          <th>Status</th>
+          <th>Responses</th>
+          <th>Created</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (const s of surveys) { %>
+          <tr>
+            <td><%= s.question.length > 80 ? s.question.slice(0, 80) + '…' : s.question %></td>
+            <td><span class="badge badge-<%= s.status %>"><%= s.status %></span></td>
+            <td><%= s.responded || 0 %> / <%= s.total || 0 %></td>
+            <td class="muted"><%= new Date(s.created_at).toLocaleDateString() %></td>
+            <td><a href="/admin/survey/<%= s.id %>">View →</a></td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  <% } %>
+</div>
+<%- include('../partials/foot') %>

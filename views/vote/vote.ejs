@@ -1,0 +1,19 @@
+<%- include('../partials/head', { title: 'Cast your vote' }) %>
+<div class="container">
+  <div class="card center vote-card">
+    <h1>Your opinion is requested</h1>
+    <blockquote class="question-text"><%= question %></blockquote>
+    <form method="POST" action="/vote/<%= token %>">
+      <div class="vote-buttons">
+        <button type="submit" name="response" value="agree" class="btn btn-agree btn-large">
+          Agree
+        </button>
+        <button type="submit" name="response" value="disagree" class="btn btn-disagree btn-large">
+          Disagree
+        </button>
+      </div>
+    </form>
+    <p class="muted small">Your response is final — you can only vote once.</p>
+  </div>
+</div>
+<%- include('../partials/foot') %>

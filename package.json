@@ -1,0 +1,19 @@
+{
+  "name": "claude-survey",
+  "version": "1.0.0",
+  "description": "Agree/Disagree survey app",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "hash-password": "node scripts/hash-password.js"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.14.0",
+    "bcrypt": "^5.1.1",
+    "cookie-session": "^2.1.0",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "nodemailer": "^6.9.13"
+  }
+}
