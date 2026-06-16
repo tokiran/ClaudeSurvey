@@ -39,7 +39,7 @@ app.use((req, res) => {
 
 app.use((err, req, res, next) => {
   console.error(err);
-  res.status(500).render('error', { message: 'Something went wrong.' });
+  res.status(500).render('error', { message: err.message || 'Something went wrong.' });
 });
 
 // Only start the listener when run directly (not when imported by Vercel)
