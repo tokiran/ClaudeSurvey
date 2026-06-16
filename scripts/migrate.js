@@ -1,5 +1,4 @@
 require('dotenv').config();
-const { createClient } = require('@libsql/client');
 
 const url = process.env.TURSO_DATABASE_URL;
 const authToken = process.env.TURSO_AUTH_TOKEN;
@@ -10,6 +9,10 @@ if (!url) {
 }
 
 console.log('Connecting to:', url);
+
+const { createClient } = url.startsWith('file:')
+  ? require('@libsql/client')
+  : require('@libsql/client/web');
 
 const client = createClient({ url, authToken: authToken || undefined });
 
@@ -42,7 +45,7 @@ async function run() {
     "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name"
   );
   console.log('Tables in database:', result.rows.map(r => r.name).join(', ') || '(none)');
-  console.log('Migration complete.');
+  console.log('Done.');
 }
 
 run().catch(err => {

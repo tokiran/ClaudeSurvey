@@ -1,6 +1,5 @@
-const { createClient } = require('@libsql/client');
-
 const url = process.env.TURSO_DATABASE_URL;
+
 if (!url) {
   throw new Error(
     'TURSO_DATABASE_URL is not set.\n' +
@@ -8,6 +7,12 @@ if (!url) {
     '  • Vercel: add TURSO_DATABASE_URL and TURSO_AUTH_TOKEN in Project → Settings → Environment Variables'
   );
 }
+
+// For remote Turso URLs use the web (HTTP-only) client — no WASM binary,
+// much faster cold starts on Vercel. For local file:// dev use the full client.
+const { createClient } = url.startsWith('file:')
+  ? require('@libsql/client')
+  : require('@libsql/client/web');
 
 const client = createClient({
   url,
