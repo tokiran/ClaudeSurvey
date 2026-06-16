@@ -3,7 +3,7 @@ const app = require('../app');
 const { init } = require('../src/db');
 
 // Fail fast if critical env vars are missing
-const missing = ['TURSO_DATABASE_URL', 'TURSO_AUTH_TOKEN','ADMIN_EMAIL', 'ADMIN_PASSWORD_HASH', 'SESSION_SECRET']
+const missing = ['TURSO_DATABASE_URL', 'TURSO_AUTH_TOKEN','ADMIN_EMAIL', 'ADMIN_PASSWORD_HASH', 'SESSION_SECRET','GMAIL_USER','GMAIL_APP_PASSWORD','APP_BASE_URL']
   .filter(k => !process.env[k]);
 if (missing.length) {
   console.error('[config] Missing env vars:', missing.join(', '));
