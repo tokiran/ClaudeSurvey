@@ -8,6 +8,10 @@ const voteRoutes = require('./src/routes/vote');
 
 const app = express();
 
+// Trust Vercel's reverse proxy so req.secure is true on HTTPS requests,
+// which allows cookie-session to set the Secure flag correctly.
+app.set('trust proxy', 1);
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
