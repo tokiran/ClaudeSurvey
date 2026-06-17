@@ -66,25 +66,17 @@ router.post('/new', requireAuth, wrap(async (req, res) => {
     return res.render('admin/new', { error: 'Please enter at least one valid email address.' });
   }
 
-  const tx = await client.transaction('write');
-  let surveyId;
-  try {
-    const r = await tx.execute({
-      sql: 'INSERT INTO surveys (question, subject) VALUES (?, ?)',
-      args: [question, subject],
+  const r = await client.execute({
+    sql: 'INSERT INTO surveys (question, subject) VALUES (?, ?)',
+    args: [question, subject],
+  });
+  const surveyId = Number(r.lastInsertRowid);
+  for (const email of emails) {
+    const token = crypto.randomBytes(32).toString('hex');
+    await client.execute({
+      sql: 'INSERT INTO participants (survey_id, email, vote_token) VALUES (?, ?, ?)',
+      args: [surveyId, email, token],
     });
-    surveyId = Number(r.lastInsertRowid);
-    for (const email of emails) {
-      const token = crypto.randomBytes(32).toString('hex');
-      await tx.execute({
-        sql: 'INSERT INTO participants (survey_id, email, vote_token) VALUES (?, ?, ?)',
-        args: [surveyId, email, token],
-      });
-    }
-    await tx.commit();
-  } catch (e) {
-    await tx.rollback();
-    throw e;
   }
 
   res.redirect('/admin');
@@ -139,12 +131,12 @@ router.post('/survey/:id/send', requireAuth, wrap(async (req, res) => {
 
   if (survey.status === 'closed') {
     req.session.flash = 'Survey is closed; no emails sent.';
-    return res.redirect(`/admin/survey/${survey.id}`);
+    return res.redirect(`/admin/survey/${req.params.id}`);
   }
 
   const pendingResult = await client.execute({
     sql: 'SELECT email, vote_token FROM participants WHERE survey_id = ? AND responded = 0',
-    args: [survey.id],
+    args: [req.params.id],
   });
 
   const base = (process.env.APP_BASE_URL || '').replace(/\/$/, '');
@@ -166,10 +158,13 @@ router.post('/survey/:id/send', requireAuth, wrap(async (req, res) => {
     }
   }
 
+  if (errors.length) {
+    console.error('[send] email errors:', errors.join(' | '));
+  }
   req.session.flash = errors.length
     ? `Sent ${sent} email(s). Errors: ${errors.join('; ')}`
     : `Sent ${sent} email(s) successfully.`;
-  res.redirect(`/admin/survey/${survey.id}`);
+  res.redirect(`/admin/survey/${req.params.id}`);
 }));
 
 // ── Close survey ─────────────────────────────────────────────────────────────
