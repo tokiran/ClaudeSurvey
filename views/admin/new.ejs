@@ -1,30 +1,44 @@
 <%- include('../partials/head', { title: 'New Survey' }) %>
-<div class="container">
+<div class="container container--narrow">
+
   <header class="topbar">
     <h1>New survey</h1>
-    <a href="/admin" class="btn btn-ghost">← Back</a>
+    <div class="topbar-right">
+      <a href="/admin" class="btn btn-ghost">← Back</a>
+    </div>
   </header>
 
   <div class="card">
     <% if (error) { %>
-      <p class="alert"><%= error %></p>
+      <p class="alert" role="alert"><%= error %></p>
     <% } %>
+
     <form method="POST" action="/admin/new">
-      <label>Email subject <span class="muted">(what participants see in their inbox)</span>
-        <input type="text" name="subject" required autofocus
+      <label for="ns-subject">
+        Email subject
+        <span class="muted">— what participants see in their inbox</span>
+        <input type="text" id="ns-subject" name="subject" required autofocus
           placeholder="e.g. Quick question from the team — 1 click to respond"
           value="Your opinion is requested — please respond">
       </label>
-      <label>Question <span class="muted">(respondents will answer Agree or Disagree)</span>
-        <textarea name="question" rows="3" required
+
+      <label for="ns-question">
+        Survey question
+        <span class="muted">— respondents will answer Agree or Disagree</span>
+        <textarea id="ns-question" name="question" rows="3" required
           placeholder="e.g. Our team meetings are an effective use of time."></textarea>
       </label>
-      <label>Participant emails <span class="muted">(one per line, or comma-separated; duplicates are removed)</span>
-        <textarea name="emails" rows="8"
+
+      <label for="ns-emails">
+        Participant emails
+        <span class="muted">— one per line or comma-separated; duplicates removed</span>
+        <textarea id="ns-emails" name="emails" rows="8"
           placeholder="alice@example.com&#10;bob@example.com&#10;carol@example.com"></textarea>
       </label>
-      <button type="submit" class="btn">Create survey</button>
+
+      <button type="submit" class="btn full">Create survey →</button>
     </form>
   </div>
+
 </div>
 <%- include('../partials/foot') %>

@@ -1,19 +1,35 @@
-<%- include('../partials/head', { title: 'Admin Login' }) %>
-<div class="container">
-  <div class="card narrow">
-    <h1>Admin login</h1>
-    <% if (error) { %>
-      <p class="alert"><%= error %></p>
-    <% } %>
-    <form method="POST" action="/admin/login">
-      <label>Email
-        <input type="email" name="email" required autofocus>
-      </label>
-      <label>Password
-        <input type="password" name="password" required>
-      </label>
-      <button type="submit" class="btn full">Sign in</button>
-    </form>
+<%- include('../partials/head', { title: 'Sign in' }) %>
+<div class="auth-page">
+  <div class="auth-wrap">
+
+    <div class="auth-brand">
+      <div class="brand__mark" aria-hidden="true">P</div>
+      <span class="brand__name">Pulse</span>
+    </div>
+
+    <div class="auth-card">
+      <h1 class="auth-card__title">Welcome back</h1>
+      <p class="auth-card__sub">Sign in to manage your surveys</p>
+
+      <% if (error) { %>
+        <p class="alert" role="alert"><%= error %></p>
+      <% } %>
+
+      <form method="POST" action="/admin/login">
+        <label for="login-email">
+          Email address
+          <input type="email" id="login-email" name="email" required autofocus
+            placeholder="you@example.com" autocomplete="username">
+        </label>
+        <label for="login-password">
+          Password
+          <input type="password" id="login-password" name="password" required
+            placeholder="••••••••" autocomplete="current-password">
+        </label>
+        <button type="submit" class="btn full">Sign in</button>
+      </form>
+    </div>
+
   </div>
 </div>
 <%- include('../partials/foot') %>

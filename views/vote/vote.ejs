@@ -1,19 +1,45 @@
 <%- include('../partials/head', { title: 'Cast your vote' }) %>
-<div class="container">
-  <div class="card center vote-card">
-    <h1>Your opinion is requested</h1>
-    <blockquote class="question-text"><%= question %></blockquote>
+<div class="vote-page">
+  <div class="vote-wrap">
+
+    <div class="vote-eyebrow">
+      <div class="vote-eyebrow__mark" aria-hidden="true">P</div>
+      <span class="vote-eyebrow__name">Pulse</span>
+    </div>
+
+    <p class="vote-prompt">Your opinion is requested</p>
+    <h1 class="vote-question"><%= question %></h1>
+
     <form method="POST" action="/vote/<%= token %>">
       <div class="vote-buttons">
-        <button type="submit" name="response" value="agree" class="btn btn-agree btn-large">
+        <button type="submit" name="response" value="agree"
+                class="vote-btn vote-btn--agree" aria-label="I agree">
+          <span class="vote-btn__icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </span>
           Agree
         </button>
-        <button type="submit" name="response" value="disagree" class="btn btn-disagree btn-large">
+        <button type="submit" name="response" value="disagree"
+                class="vote-btn vote-btn--disagree" aria-label="I disagree">
+          <span class="vote-btn__icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </span>
           Disagree
         </button>
       </div>
     </form>
-    <p class="muted small">Your response is final — you can only vote once.</p>
+
+    <p class="vote-note">Your link is personal — you can only vote once.</p>
+
   </div>
 </div>
 <%- include('../partials/foot') %>

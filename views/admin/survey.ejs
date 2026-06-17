@@ -1,12 +1,13 @@
 <%- include('../partials/head', { title: 'Survey results' }) %>
 <div class="container">
+
   <header class="topbar">
     <h1>Results</h1>
     <div class="topbar-right">
       <a href="/admin" class="btn btn-ghost">← Dashboard</a>
       <% if (survey.status === 'open') { %>
         <form method="POST" action="/admin/survey/<%= survey.id %>/send" style="display:inline">
-          <button class="btn">Send / resend emails</button>
+          <button class="btn">Send&thinsp;/&thinsp;resend emails</button>
         </form>
         <form method="POST" action="/admin/survey/<%= survey.id %>/close" style="display:inline"
               onsubmit="return confirm('Close this survey? Existing vote links will stop working.')">
@@ -17,32 +18,33 @@
   </header>
 
   <% if (flash) { %>
-    <p class="alert alert-info"><%= flash %></p>
+    <p class="alert alert-info" role="status"><%= flash %></p>
   <% } %>
 
-  <div class="card">
-    <p class="question-text"><%= survey.question %></p>
+  <div class="card" style="margin-bottom: var(--s-6)">
+    <blockquote class="question-text"><%= survey.question %></blockquote>
     <span class="badge badge-<%= survey.status %>"><%= survey.status %></span>
   </div>
 
   <div class="stats-grid">
     <div class="stat-card">
-      <div class="stat-number"><%= stats.responded %> / <%= stats.total %></div>
+      <div class="stat-number"><%= stats.responded %>&thinsp;<span style="font-size:.5em;opacity:.5">/</span>&thinsp;<%= stats.total %></div>
       <div class="stat-label">Responded</div>
     </div>
     <div class="stat-card agree">
-      <div class="stat-number"><%= stats.agree %> <small>(<%= stats.agreePct %>%)</small></div>
-      <div class="stat-label">Agree</div>
+      <div class="stat-number"><%= stats.agree %></div>
+      <div class="stat-label">Agree&ensp;<span style="opacity:.6">(<%= stats.agreePct %>%)</span></div>
     </div>
     <div class="stat-card disagree">
-      <div class="stat-number"><%= stats.disagree %> <small>(<%= stats.disagreePct %>%)</small></div>
-      <div class="stat-label">Disagree</div>
+      <div class="stat-number"><%= stats.disagree %></div>
+      <div class="stat-label">Disagree&ensp;<span style="opacity:.6">(<%= stats.disagreePct %>%)</span></div>
     </div>
   </div>
 
   <% if (stats.responded > 0) { %>
-    <div class="bar-wrap">
-      <div class="bar-agree" style="width:<%= stats.agreePct %>%"></div>
+    <div class="bar-wrap" role="img"
+         aria-label="<%= stats.agreePct %>% agree, <%= stats.disagreePct %>% disagree">
+      <div class="bar-agree"    style="width:<%= stats.agreePct %>%"></div>
       <div class="bar-disagree" style="width:<%= stats.disagreePct %>%"></div>
     </div>
   <% } %>
@@ -50,9 +52,9 @@
   <table>
     <thead>
       <tr>
-        <th>Email</th>
-        <th>Status</th>
-        <th>Responded at</th>
+        <th scope="col">Participant</th>
+        <th scope="col">Response</th>
+        <th scope="col">Responded at</th>
       </tr>
     </thead>
     <tbody>
@@ -61,19 +63,20 @@
           <td><%= p.email %></td>
           <td>
             <% if (!p.responded) { %>
-              <span class="badge badge-open">Not yet</span>
+              <span class="badge badge-closed">Pending</span>
             <% } else if (p.response === 'agree') { %>
               <span class="badge badge-agree">Agree</span>
             <% } else { %>
               <span class="badge badge-disagree">Disagree</span>
             <% } %>
           </td>
-          <td class="muted">
+          <td class="muted small">
             <%= p.responded_at ? new Date(p.responded_at).toLocaleString() : '—' %>
           </td>
         </tr>
       <% } %>
     </tbody>
   </table>
+
 </div>
 <%- include('../partials/foot') %>

@@ -1,2 +1,14 @@
+<script>
+(function () {
+  // Vote page: dim the other button after selection for instant visual feedback
+  var btns = document.querySelectorAll('.vote-btn');
+  if (!btns.length) return;
+  btns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      btns.forEach(function (b) { b.style.opacity = b === btn ? '1' : '.45'; });
+    });
+  });
+}());
+</script>
 </body>
 </html>
