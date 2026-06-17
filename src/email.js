@@ -1,18 +1,23 @@
-require('dotenv').config();
 const nodemailer = require('nodemailer');
 
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false,   // STARTTLS — more reliable than port 465 on cloud functions
-  requireTLS: true,
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_APP_PASSWORD,
-  },
-});
-
 async function sendVoteEmail({ to, subject, question, voteLink }) {
+  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+    throw new Error('GMAIL_USER and GMAIL_APP_PASSWORD are not configured in environment variables.');
+  }
+
+  // Create a fresh transporter per call — reusing a module-level transporter
+  // causes stale connection errors on serverless cold starts.
+  const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
+    requireTLS: true,
+    auth: {
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_APP_PASSWORD,
+    },
+  });
+
   const html = `
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
       <h2 style="margin-top: 0;">You've been invited to respond to a survey</h2>
@@ -37,12 +42,16 @@ async function sendVoteEmail({ to, subject, question, voteLink }) {
     </div>
   `;
 
-  await transporter.sendMail({
-    from: `"Survey" <${process.env.GMAIL_USER}>`,
-    to,
-    subject: subject || 'Your opinion is requested — please respond',
-    html,
-  });
+  try {
+    await transporter.sendMail({
+      from: `"Survey" <${process.env.GMAIL_USER}>`,
+      to,
+      subject: subject || 'Your opinion is requested — please respond',
+      html,
+    });
+  } finally {
+    transporter.close();
+  }
 }
 
 function escapeHtml(str) {

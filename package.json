@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "hash-password": "node scripts/hash-password.js"
+    "hash-password": "node scripts/hash-password.js",
+    "migrate": "node scripts/migrate.js"
   },
   "dependencies": {
     "@libsql/client": "^0.14.0",
